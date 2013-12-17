@@ -189,4 +189,18 @@ public class Transformer {
     Preconditions.checkState(global.isGlobal());
     return global;
   }
+
+  /**
+   * Transforms a geometry_msgs.PoseStamped message to frame targetFrame
+   * WARNING: this changes the original PoseStamped message (like the other messages in rosjava_geometry)!!!
+   * @param targetFrame  The target frame
+   * @param pose       geometry_msgs.msg.PoseStamped object; both in and out.
+   */
+  public void transformPose(GraphName targetFrame, geometry_msgs.PoseStamped pose)
+  {
+		Transform poseTrans = Transform.fromPoseMessage(pose.getPose());
+		Transform frameTrans = this.lookupTransform(makeFullyQualified(targetFrame), makeFullyQualified(GraphName.of(pose.getHeader().getFrameId())));
+		Transform resultTrans = poseTrans.multiply(frameTrans);
+		resultTrans.toPoseStampedMessage(makeFullyQualified(targetFrame), pose.getHeader().getStamp(), pose);
+  }
 }
