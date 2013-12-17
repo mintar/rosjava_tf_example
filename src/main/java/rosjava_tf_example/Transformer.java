@@ -180,10 +180,12 @@ public class Transformer {
 
   public GraphName makeFullyQualified(GraphName frame) {
     Preconditions.checkNotNull(frame, "Frame not specified.");
+
+    GraphName prefixed = GraphName.of(frame.toString());   // clone frame
     if (prefix != null) {
-      return prefix.join(frame);
+      prefixed = prefix.join(frame);
     }
-    GraphName global = frame.toGlobal();
+    GraphName global = prefixed.toGlobal();
     Preconditions.checkState(global.isGlobal());
     return global;
   }
