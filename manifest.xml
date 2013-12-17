@@ -1,0 +1,15 @@
+<package>
+  <description brief="rosjava_tf_example">
+
+    rosjava_tf_example
+
+  </description>
+  <author>Martin Günther</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/rosjava_tf_example</url>
+  <depend package="race_msgs"/>
+  <depend package="rosjava"/>
+</package>
+
+
