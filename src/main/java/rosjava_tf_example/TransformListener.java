@@ -1,13 +1,20 @@
-package org.ros.android.views.visualization;
+/*
+ * copied from: https://code.google.com/p/rosjava/source/browse/android_honeycomb_mr2/src/org/ros/android/views/visualization/?repo=android&r=07c00460a3826b976c153ea57353a54a4b275e37
+ */
+
+package rosjava_tf_example;
 
 import org.ros.message.MessageListener;
-import org.ros.message.geometry_msgs.TransformStamped;
-import org.ros.message.tf.tfMessage;
+import geometry_msgs.TransformStamped;
+import tf.tfMessage;
+
+import org.ros.namespace.GraphName;
+import org.ros.node.AbstractNodeMain;
+import org.ros.node.ConnectedNode;
 import org.ros.node.Node;
-import org.ros.node.NodeMain;
 import org.ros.node.topic.Subscriber;
 
-public class TransformListener implements NodeMain {
+public class TransformListener extends AbstractNodeMain {
 
   private Transformer transformer = new Transformer();
   private Subscriber<tfMessage> tfSubscriber;
@@ -21,12 +28,13 @@ public class TransformListener implements NodeMain {
   }
 
   @Override
-  public void onStart(Node node) {
-    transformer.setPrefix(node.newParameterTree().getString("~tf_prefix", ""));
-    tfSubscriber = node.newSubscriber("tf", "tf/tfMessage", new MessageListener<tfMessage>() {
+  public void onStart(ConnectedNode node) {
+    transformer.setPrefix(GraphName.of(node.getParameterTree().getString("~tf_prefix", "")));
+    tfSubscriber = node.newSubscriber(GraphName.of("tf"), tf.tfMessage._TYPE); 
+    tfSubscriber.addMessageListener(new MessageListener<tfMessage>() {
       @Override
       public void onNewMessage(tfMessage message) {
-        for (TransformStamped transform : message.transforms) {
+        for (TransformStamped transform : message.getTransforms()) {
           transformer.updateTransform(transform);
         }
       }
@@ -38,4 +46,8 @@ public class TransformListener implements NodeMain {
     tfSubscriber.shutdown();
   }
 
+  @Override
+  public GraphName getDefaultNodeName() {
+	return GraphName.of("rosjava_tf_example");
+  }
 }

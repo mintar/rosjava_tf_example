@@ -12,15 +12,17 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
+ * 
+ * copied from: https://code.google.com/p/rosjava/source/browse/android_honeycomb_mr2/src/org/ros/android/views/visualization/?repo=android&r=07c00460a3826b976c153ea57353a54a4b275e37
  */
 
-package org.ros.android.views.visualization;
+package rosjava_tf_example;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import org.ros.message.geometry_msgs.TransformStamped;
+import geometry_msgs.TransformStamped;
 import org.ros.namespace.GraphName;
 import org.ros.rosjava_geometry.Transform;
 
@@ -58,7 +60,7 @@ public class Transformer {
    *          the transform to add
    */
   public void updateTransform(TransformStamped transform) {
-    GraphName frame = new GraphName(transform.child_frame_id);
+    GraphName frame = GraphName.of(transform.getChildFrameId());
     transforms.put(frame, transform);
   }
 
@@ -129,7 +131,7 @@ public class Transformer {
    */
   public Transform lookupTransform(GraphName targetFrame, GraphName sourceFrame) {
     List<Transform> transforms = lookupTransforms(targetFrame, sourceFrame);
-    Transform result = Transform.newIdentityTransform();
+    Transform result = Transform.identity();
     for (Transform transform : transforms) {
       result = result.multiply(transform);
     }
@@ -166,8 +168,8 @@ public class Transformer {
       if (currentTransform == null) {
         break;
       }
-      result.add(Transform.newFromTransformMessage(currentTransform.transform));
-      qualifiedFrame = makeFullyQualified(new GraphName(currentTransform.header.frame_id));
+      result.add(Transform.fromTransformMessage(currentTransform.getTransform()));
+      qualifiedFrame = makeFullyQualified(GraphName.of((currentTransform.getHeader().getFrameId())));
     }
     return result;
   }
