@@ -1,0 +1,14 @@
+.cproject
+.project
+.pydevproject
+.settings
+.classpath
+.classpath-generated
+.project-generated
+cmake_install.cmake
+build/
+bin/
+msg_gen/
+srv_gen/
+*.pyc
+.gradle/
