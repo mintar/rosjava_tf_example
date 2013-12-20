@@ -199,8 +199,9 @@ public class Transformer {
   public void transformPose(GraphName targetFrame, geometry_msgs.PoseStamped pose)
   {
 		Transform poseTrans = Transform.fromPoseMessage(pose.getPose());
-		Transform frameTrans = this.lookupTransform(makeFullyQualified(targetFrame), makeFullyQualified(GraphName.of(pose.getHeader().getFrameId())));
-		Transform resultTrans = poseTrans.multiply(frameTrans);
+		Transform frameTrans = this.lookupTransform(makeFullyQualified(GraphName.of(pose.getHeader().getFrameId())), makeFullyQualified(targetFrame));
+		Transform resultTrans = frameTrans.multiply(poseTrans);
+
 		resultTrans.toPoseStampedMessage(makeFullyQualified(targetFrame), pose.getHeader().getStamp(), pose);
   }
 }
